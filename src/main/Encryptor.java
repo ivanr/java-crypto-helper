@@ -12,7 +12,7 @@ import java.util.Arrays;
 
 public class Encryptor {
 
-    private static byte VERSION_1 = 0x01;
+    private static final byte VERSION_1 = 0x01;
 
     private static final int GCM_NONCE_LENGTH_BYTES = 12;
 
