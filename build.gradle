@@ -1,0 +1,39 @@
+plugins {
+    id 'io.freefair.lombok' version '5.1.0'
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+compileJava {
+    options.compilerArgs += ["-parameters"]
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/commons-codec/commons-codec
+    compile group: 'commons-codec', name: 'commons-codec', version: '1.14'
+
+    // https://mvnrepository.com/artifact/junit/junit/4.12
+    testCompile 'junit:junit:4.12'
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ["src/main"]
+        resources.srcDirs = ["src/main"]
+    }
+
+    test {
+        java.srcDirs = ["src/test"]
+        resources.srcDirs = ["src/test"]
+    }
+}
