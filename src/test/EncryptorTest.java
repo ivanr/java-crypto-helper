@@ -1,6 +1,7 @@
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.crypto.AEADBadTagException;
 import java.security.SecureRandom;
 import java.util.Arrays;
 
@@ -13,7 +14,7 @@ public class EncryptorTest {
     private static final byte[] AAD = "Testing. One, two, three.".getBytes();
 
     @Test
-    public void test() {
+    public void testOk() {
         byte[] key = new byte[AES_KEY_SIZE_BITS / 8];
         new SecureRandom().nextBytes(key);
 
@@ -23,5 +24,28 @@ public class EncryptorTest {
         byte[] decryptedPlaintext = encryptor.decrypt(ciphertext, AAD);
 
         Assert.assertTrue(Arrays.equals(PLAINTEXT, decryptedPlaintext));
+    }
+
+    @Test(expected = AEADBadTagException.class)
+    public void testBadTag() {
+        byte[] key = new byte[AES_KEY_SIZE_BITS / 8];
+        new SecureRandom().nextBytes(key);
+
+        Encryptor encryptor = new Encryptor(key);
+
+        byte[] ciphertext = encryptor.encrypt(PLAINTEXT, AAD);
+        ciphertext[ciphertext.length - 1] = (byte)(ciphertext[ciphertext.length - 1] + 1);
+        encryptor.decrypt(ciphertext, AAD);
+    }
+
+    @Test(expected = AEADBadTagException.class)
+    public void testBadAad() {
+        byte[] key = new byte[AES_KEY_SIZE_BITS / 8];
+        new SecureRandom().nextBytes(key);
+
+        Encryptor encryptor = new Encryptor(key);
+
+        byte[] ciphertext = encryptor.encrypt(PLAINTEXT, AAD);
+        encryptor.decrypt(ciphertext, "Incorrect AAD".getBytes());
     }
 }
