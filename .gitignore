@@ -4,3 +4,4 @@
 out
 lombok.config
 build
+test.crt
