@@ -37,7 +37,8 @@ public class SelfSignedCertificate {
                 certPublicKey,
                 "SHA256withRSA",
                 new X500Name("CN=TEST"),
-                10);
+                new Date(1_598_918_400_000L),
+                new Date(1_598_918_400_000L + 398 * 86_400_000L));
         //System.out.println(c);
 
         FileOutputStream f = new FileOutputStream("test.crt");
@@ -55,8 +56,20 @@ public class SelfSignedCertificate {
         final Instant now = Instant.now();
         final Date notBefore = Date.from(now);
         final Date notAfter = Date.from(now.plus(Duration.ofDays(days)));
+        return generate(issuerPrivateKey, certPublicKey, hashAlgorithm, x500Name, notBefore, notAfter);
+    }
 
+    public static X509Certificate generate(final PrivateKey issuerPrivateKey,
+                                           final PublicKey certPublicKey,
+                                           final String hashAlgorithm,
+                                           final X500Name x500Name,
+                                           final Date notBefore,
+                                           final Date notAfter)
+            throws OperatorCreationException, CertificateException, IOException
+    {
         final ContentSigner contentSigner = new JcaContentSignerBuilder(hashAlgorithm).build(issuerPrivateKey);
+
+        final Instant now = Instant.now();
 
         final X509v3CertificateBuilder certificateBuilder =
                 new JcaX509v3CertificateBuilder(x500Name,
@@ -68,7 +81,7 @@ public class SelfSignedCertificate {
                         .addExtension(createAuthorityKeyIdentifierExtension(certPublicKey))
                         .addExtension(createSubjectKeyIdentifierExtension(certPublicKey))
                         .addExtension(Extension.basicConstraints, true, new BasicConstraints(true))
-                        //.addExtension(createCtPoisonExtension())
+                //.addExtension(createCtPoisonExtension())
                 ;
 
         return new JcaX509CertificateConverter()
