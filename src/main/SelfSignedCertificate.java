@@ -78,9 +78,10 @@ public class SelfSignedCertificate {
                         notAfter,
                         x500Name,
                         certPublicKey)
-                        .addExtension(createAuthorityKeyIdentifierExtension(certPublicKey))
+                        //.addExtension(createAuthorityKeyIdentifierExtension(certPublicKey))
                         .addExtension(createSubjectKeyIdentifierExtension(certPublicKey))
                         .addExtension(Extension.basicConstraints, true, new BasicConstraints(true))
+                        .addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign))
                 //.addExtension(createCtPoisonExtension())
                 ;
 
