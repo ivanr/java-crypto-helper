@@ -39,7 +39,6 @@ public class SelfSignedCertificate {
                 new X500Name("CN=TEST"),
                 new Date(1_598_918_400_000L),
                 new Date(1_598_918_400_000L + 398 * 86_400_000L));
-        //System.out.println(c);
 
         FileOutputStream f = new FileOutputStream("test.crt");
         f.write(c.getEncoded());
@@ -78,12 +77,9 @@ public class SelfSignedCertificate {
                         notAfter,
                         x500Name,
                         certPublicKey)
-                        //.addExtension(createAuthorityKeyIdentifierExtension(certPublicKey))
                         .addExtension(createSubjectKeyIdentifierExtension(certPublicKey))
                         .addExtension(Extension.basicConstraints, true, new BasicConstraints(true))
-                        .addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign))
-                //.addExtension(createCtPoisonExtension())
-                ;
+                        .addExtension(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign | KeyUsage.cRLSign));
 
         return new JcaX509CertificateConverter()
                 .setProvider(new BouncyCastleProvider())
@@ -106,7 +102,6 @@ public class SelfSignedCertificate {
         return Extension.create(
                 new ASN1ObjectIdentifier("1.3.6.1.4.1.11129.2.4.3"),
                 true,
-                //ASN1Primitive.fromByteArray(new byte[] { 0x05, 0x00})
                 DERNull.INSTANCE
         );
     }
